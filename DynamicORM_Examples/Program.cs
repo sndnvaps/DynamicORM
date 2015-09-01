@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using DynamicORM;
 
 namespace DynamicORM_Examples
 {
     class Program
     {
         //Update this to use your connection string.
-        static DynamicORM.DynamicORM db = new DynamicORM.DynamicORM("Data Source=localhost\\SQLExpress; Initial Catalog=DynamicORM; User Id=DynamicORM; Password=password123;");
+        static DynamicORM.DynamicORM db = new DynamicORM.DynamicORM("Data Source=localhost\\SQLExpress; Initial Catalog=DynamicORM; User Id=admin; Password=447826004;");
 
         static void Main(string[] args)
         {
@@ -20,11 +21,11 @@ namespace DynamicORM_Examples
 
             //Add a new entry via stored procedure
             //This stored procedure is called INS_Person and takes an nchar(32) parameter called Name
-            IEnumerable<dynamic> result = db.StoredProcedure("INS_Person", new { Name = "Dave" });
+            IEnumerable<dynamic> result = db.StoredProcedure("INS_Person", new { Name = "Jimes" });
             Console.WriteLine("Inserted a new person with ID {0}.", result.First().PersonID);
 
             //Insert a bunch of people with random names
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 15; i++)
             {
                 db.StoredProcedure("INS_Person", new { Name = Guid.NewGuid().ToString().Substring(0, 8) });
             }
@@ -37,7 +38,7 @@ namespace DynamicORM_Examples
 
             //Fire an event when a property changes on a person
             //This is a little convoluted, but works because the dynamic is actually an ExpandoObject
-            dynamic dave = db.Command("SELECT TOP 1 * FROM People WHERE [Name] = 'Dave'").First();
+            dynamic dave = db.Command("SELECT TOP 1 * FROM People WHERE [Name] = 'Jimes'").First();
             ((INotifyPropertyChanged)dave).PropertyChanged += (dynamic sender, PropertyChangedEventArgs e) =>
                 {
                     IDictionary<string, object> daveProperties = (IDictionary<string, object>)dave;
